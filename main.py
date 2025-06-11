@@ -98,6 +98,9 @@ def get_task_class(task):
     elif task == "mimic_extract":
         from ehr_gym.env.task.mimic_extract import MIMICEXTRACTEHRTask
         return MIMICEXTRACTEHRTask
+    elif task == "medxpertqa":
+        from ehr_gym.env.task.medxpertqa import MedXpertQATask
+        return MedXpertQATask
     else:
         raise ValueError(f'Invalid task: {task}')
 
