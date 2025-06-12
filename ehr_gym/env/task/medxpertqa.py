@@ -36,7 +36,19 @@ class MedXpertQATask(AbstractEHRTask):
         data_path: str
             Path to the data directory
         """
+        if self.task_list is None:
+            task_file = 'task.jsonl'
+            task_path = os.path.join(self.data_path, task_file)
+            self.task_list = []
+            with open(task_path, 'r') as f:
+                for line in f:
+                    self.task_list.append(json.loads(line))
+
+        task_data = self.task_list[self.task_id]
+        
+
         raise NotImplementedError
+
 
      def setup_goal(self) -> tuple[str, dict]:
         """
