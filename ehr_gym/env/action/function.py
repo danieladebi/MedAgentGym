@@ -176,6 +176,8 @@ def validate_code(code: str) -> Dict[str, Any]:
     code_file = Path(code_file)
     if not 'print' in code and 'answer' in code:
         code += "\nprint(answer)"
+    code_file.parent.mkdir(parents=True, exist_ok=True)
+
     code_file.write_text(code)
 
     try:

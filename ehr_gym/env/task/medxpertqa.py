@@ -1,5 +1,8 @@
 from .base import AbstractEHRTask
 
+instruction = """You are an biomedical expert in handling EHR data and answer questions accordingly. 
+Please answer the following multiple-choice questions."""
+
 class MedXpertQATask(AbstractEHRTask):
     # TODO: complete this
     permitted_actions = ['request_info', 'validate_code', 'debug']
@@ -37,7 +40,7 @@ class MedXpertQATask(AbstractEHRTask):
             Path to the data directory
         """
         if self.task_list is None:
-            task_file = 'task.jsonl'
+            task_file = 'medxpertqa_mm_input.jsonl'
             task_path = os.path.join(self.data_path, task_file)
             self.task_list = []
             with open(task_path, 'r') as f:
@@ -45,10 +48,18 @@ class MedXpertQATask(AbstractEHRTask):
                     self.task_list.append(json.loads(line))
 
         task_data = self.task_list[self.task_id]
-        
+        self.question = task_data["question"]
+        self.id = task_data["id"]
+        self.label = task_data["label"][0]
+        self.medical_task = task_data["medical_task"]
+        self.body_system = task_data["body_system"]
+        self.question_type = task_data["question_type"]
+        self.options = task_data["options"]
+        self.images = task_data["images"]
 
-        raise NotImplementedError
+        goal, info = self.setup_goal()
 
+        return goal, info
 
      def setup_goal(self) -> tuple[str, dict]:
         """
@@ -59,11 +70,28 @@ class MedXpertQATask(AbstractEHRTask):
         data_path: str
             Path to the data directory
         """
-        raise NotImplementedError
+        self.goal = self.question
+        info = {
+            "id": self.id,
+            "medical_task": self.medical_task,
+            "body_system": self.body_system,
+            "question_type": self.question_type,
+            "options": self.options,
+            "images": self.images
+        }
+        return goal, info
         
     def _get_obs(self) -> dict:
-        raise NotImplementedError
+        obs = {}
+        obs["type"] = "initial_observation"
+        obs["info"] = {}
         
+
+        raise NotImplementedError
+
+    def validate(self, chat_messages, obs):
+
+        raise NotImplementedError
     
 
 
